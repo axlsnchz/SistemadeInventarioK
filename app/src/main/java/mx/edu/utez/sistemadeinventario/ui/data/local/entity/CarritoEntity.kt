@@ -5,39 +5,28 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(
 
-    tableName = "producto",
-)
-data class CarritoEntity (
+@Entity(tableName = "carrito")
+
+
+data class CarritoEntity(
 
     @PrimaryKey
-    @ColumnInfo(name = "id")
-    val id: Int = 0,
+    @ColumnInfo(name = "producto_id")
+    val productoId: Int,
+
     @ColumnInfo(name = "nombre")
     val nombre: String,
-    @ColumnInfo(name = "sku")
-    val sku: String,
 
     @ColumnInfo(name = "precio_unitario")
     val precioUnitario: Double,
 
-    @ColumnInfo(name = "stock")
-    val stock: Int,
+    @ColumnInfo(name = "cantidad")
+    val cantidad: Int,
 
-    @ColumnInfo(name = "stock_minimo")
-    val stockMinimo: Int,
+    @ColumnInfo(name = "foto_url")
+    val fotoUrl: String? = null,
 
-
-    @ColumnInfo(name = "categoria")
-    val cateogoria: String,
-
-
-    @ColumnInfo(name = "local_image_path")
-    val fotoUri: String? = null,
-
-    @ColumnInfo(name = "nfc_id")
-    val nfcId: Int,
-
-
-    )
+    @ColumnInfo(name = "stock_disponible")
+    val stockDisponible: Int
+)
