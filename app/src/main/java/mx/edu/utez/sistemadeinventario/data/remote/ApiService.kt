@@ -16,13 +16,11 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
-
 interface ApiService {
 
     @POST("api/auth/login")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
-    // ADMIN y VENDEDOR
     @GET("api/productos")
     suspend fun getProductos(@Query("q") query: String? = null): Response<List<ProductoDto>>
 
@@ -35,17 +33,14 @@ interface ApiService {
     @POST("api/ventas")
     suspend fun crearVenta(@Body request: VentaRequest): Response<VentaResponse>
 
-    // ADMIN
     @POST("api/productos")
     suspend fun crearProducto(@Body request: ProductoRequest): Response<ProductoDto>
-
 
     @PUT("api/productos/{id}")
     suspend fun editarProducto(
         @Path("id") id: Long,
         @Body request: ProductoRequest
     ): Response<ProductoDto>
-
 
     @Multipart
     @POST("api/productos/{id}/foto")

@@ -1,4 +1,4 @@
-package mx.edu.utez.sistemadeinventario.ui.data.local
+package mx.edu.utez.sistemadeinventario.data.local
 
 import android.content.Context
 import androidx.datastore.core.DataStore
