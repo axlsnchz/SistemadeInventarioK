@@ -39,7 +39,10 @@ class AuthRepository(
             },
             onFailure = { error ->
                 when (error) {
-                    is SesionExpiradaException, is SinPermisoException ->
+                    is SesionExpiradaException ->
+                        if (error.fromServer) Result.failure(error)
+                        else Result.failure(Exception("Usuario o contrasena incorrectos"))
+                    is SinPermisoException ->
                         Result.failure(Exception("Usuario o contraseña incorrectos"))
                     else -> Result.failure(error)
                 }

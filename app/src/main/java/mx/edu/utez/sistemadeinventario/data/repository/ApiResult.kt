@@ -6,6 +6,7 @@ import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 
 class SesionExpiradaException(
+    val fromServer: Boolean = false,
     message: String = "Tu sesion expiró, inicia sesion de nuevo"
 ) : Exception(message)
 
@@ -49,7 +50,7 @@ internal suspend fun <T> safeApiCall(block: suspend () -> Response<T>): Result<T
 private fun <T> Response<T>.toException(): Exception {
     val serverMessage = serverMessage()
     return when (val code = code()) {
-        401 -> SesionExpiradaException()
+        401 -> if (serverMessage != null) SesionExpiradaException(fromServer = true, message = serverMessage) else SesionExpiradaException()
         403 -> SinPermisoException()
         404 -> NoEncontradoException(serverMessage ?: "No se encontro lo solicitado")
         400, 409, 422 -> ApiException(code, serverMessage ?: "Datos invalidos o stock insuficiente")
@@ -65,7 +66,7 @@ private fun <T> Response<T>.serverMessage(): String? = try {
         val json = JsonParser.parseString(raw)
         if (json.isJsonObject) {
             val obj = json.asJsonObject
-            listOf("message", "mensaje").firstNotNullOfOrNull { key ->
+            listOf("error", "message", "mensaje").firstNotNullOfOrNull { key ->
                 obj.get(key)
                     ?.takeIf { it.isJsonPrimitive }
                     ?.asString

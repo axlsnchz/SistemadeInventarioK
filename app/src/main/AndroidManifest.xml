@@ -13,8 +13,6 @@
 
 
     <application
-
-
         android:name=".InventarioApplication"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"

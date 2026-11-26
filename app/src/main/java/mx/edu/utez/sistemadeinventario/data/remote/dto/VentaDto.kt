@@ -15,12 +15,12 @@ data class VentaResponse(
     val id: Long,
     val fecha: String? = null,
     val total: Double = 0.0,
-    val detalles: List<DetalleVentaDto>? = null
+    val vendedor: String? = null,
+    val items: List<ItemVentaResponse> = emptyList()
 )
 
-data class DetalleVentaDto(
-    val id: Long? = null,
-    val producto: ProductoDto? = null,
+data class ItemVentaResponse(
+    val producto: String = "",
     val cantidad: Int = 0,
     val precioUnitario: Double = 0.0
 )

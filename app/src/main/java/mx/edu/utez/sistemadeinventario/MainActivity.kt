@@ -1,47 +1,51 @@
 package mx.edu.utez.sistemadeinventario
 
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import mx.edu.utez.sistemadeinventario.data.nfc.NfcManager
+import mx.edu.utez.sistemadeinventario.ui.navigation.AppNavGraph
 import mx.edu.utez.sistemadeinventario.ui.theme.SistemadeInventarioTheme
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var nfcManager: NfcManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
+        )
+
+        nfcManager = NfcManager(this)
+
         setContent {
             SistemadeInventarioTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                AppNavGraph(nfcManager = nfcManager)
             }
         }
+
+        intent?.let { nfcManager.handleIntent(it) }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    override fun onResume() {
+        super.onResume()
+        nfcManager.enableReadMode()
+    }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SistemadeInventarioTheme {
-        Greeting("Android")
+    override fun onPause() {
+        super.onPause()
+        nfcManager.disableReadMode()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        nfcManager.handleIntent(intent)
     }
 }

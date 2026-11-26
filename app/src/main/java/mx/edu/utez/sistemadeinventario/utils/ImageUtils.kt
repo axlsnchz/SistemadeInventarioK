@@ -29,9 +29,9 @@ object ImageUtils {
     /**
      * Convierte la foto en la parte "multipart" que pide ApiService.subirFoto().
      * Lee el archivo, así que llamarlo fuera del hilo principal (el repositorio lo hace en IO).
-     * [partName] tiene que llamarse igual que el @RequestParam del backend (por ahora "foto").
+     * [partName] tiene que llamarse igual que el @RequestParam del backend ("image").
      */
-    fun uriToMultipart(context: Context, uri: Uri, partName: String = "foto"): MultipartBody.Part {
+    fun uriToMultipart(context: Context, uri: Uri, partName: String = "image"): MultipartBody.Part {
         val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
             ?: throw IOException("No se pudo leer la foto")
         val cuerpo = bytes.toRequestBody("image/jpeg".toMediaType())

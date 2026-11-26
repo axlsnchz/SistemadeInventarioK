@@ -6,7 +6,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class RetrofitClient(tokenProvider: () -> String?) {
+class RetrofitClient(
+    tokenProvider: () -> String?,
+    onUnauthorized: () -> Unit = {}
+) {
+
+    private val authInterceptor = AuthInterceptor(tokenProvider, onUnauthorized)
 
     private val okHttpClient: OkHttpClient by lazy {
         val logging = HttpLoggingInterceptor().apply {
@@ -15,7 +20,7 @@ class RetrofitClient(tokenProvider: () -> String?) {
         }
 
         OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(tokenProvider))
+            .addInterceptor(authInterceptor)
             .addInterceptor(logging)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
@@ -35,11 +40,11 @@ class RetrofitClient(tokenProvider: () -> String?) {
     companion object {
 
 
-        const val BASE_URL = "http://10.0.2.2:8080/"
+        const val BASE_URL = "http://127.0.0.1:8080/"
         fun getImageUrl(fotoUrl: String?): String? {
         if (fotoUrl.isNullOrBlank()) return null
         if (fotoUrl.startsWith("http://") || fotoUrl.startsWith("https://")) return fotoUrl
-        return BASE_URL.trimEnd('/') + "/" + fotoUrl.trimStart('/')
+        return BASE_URL + "uploads/" + fotoUrl.trimStart('/')
         }
     }
 }
